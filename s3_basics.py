@@ -3,8 +3,8 @@ from botocore.exceptions import NoCredentialsError, ParamValidationError
 import requests
 
 session = boto3.Session(
-    profile_name='Scarlassara',
-    region_name='us-east-1'
+    profile_name='YOUR_PROFILE_NAME',
+    region_name='YOUR_AWS_REGION'
 )
 
 client = session.client('s3')
