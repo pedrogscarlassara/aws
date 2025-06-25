@@ -3,8 +3,8 @@ from botocore.exceptions import NoCredentialsError, ParamValidationError
 import requests
 
 session = boto3.Session(
-    profile_name='YOUR_PROFILE_NAME',
-    region_name='YOUR_AWS_REGION'
+    profile_name='Scarlassara',
+    region_name='us-east-1'
 )
 
 client = session.client('s3')
@@ -105,17 +105,21 @@ def main():
                 print(f'ClientError: {error}')
 
         elif option == 7:
-            object_name = input('Object Name: ')
-            bucket_name = input('Bucket Name: ')
-            response = client.delete_object(
-                Bucket=bucket_name,
-                Key=object_name
-            )
-            print(response)
+            try:
+                object_name = input('Object Name: ')
+                bucket_name = input('Bucket Name: ')
+                response = client.delete_object(
+                    Bucket=bucket_name,
+                    Key=object_name
+                )
+                print(response)
+            except client.exceptions.NoSuchBucket:
+                print('No such bucket.')
+            except client.exceptions.ClientError as error:
+                print(f'ClientError: {error}.')
 
         elif option == 8:
             print('TODO: Implement this option.')
-
         else:
             print("Invalid option.")
 
