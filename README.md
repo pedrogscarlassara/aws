@@ -11,3 +11,6 @@ Delete Object, List Buckets, Download Objects
 
 # security_groups.py
 Creates a Security Group allowing HTTP and SSH to Ingress in it.
+
+# flask_s3_basics folder
+An replica of s3_basics.py but in Flask (my first code in Flask)
