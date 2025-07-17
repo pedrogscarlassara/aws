@@ -1,16 +1,12 @@
-# Boto3 Training
-This repository contains my Python projects and experiments using the Boto3 API for interacting with AWS services.
+# Boto3 Training Repository
 
-# ec2_instance.py
-Creates a EC2 instance with Security Group (Ingress HTTP and SSH) and a VPC.
+This repository contains Python projects and experiments using the Boto3 SDK to interact with AWS services.
 
-# s3_basics.py
-A terminal with multiple options related to S3 like:
-Create Bucket, Create Object, Delete Bucket
-Delete Object, List Buckets, Download Objects
+## Files
 
-# security_groups.py
-Creates a Security Group allowing HTTP and SSH to Ingress in it.
-
-# flask_s3_basics folder
-An replica of s3_basics.py but in Flask (my first code in Flask)
+- `ec2_instance.py`: Creates an EC2 instance with a Security Group (allowing HTTP and SSH ingress) and a VPC.
+- `s3_basics.py`: A terminal-based application with options to create/delete buckets and objects, list buckets, and download objects from S3.
+- `security_groups.py`: Creates a Security Group allowing HTTP and SSH ingress.
+- `flask_s3_basics/`: A Flask-based replica of `s3_basics.py` (my first Flask code).
+- `aws_challenge_1.py`: My first task using Boto3.
+- `aws_challenge_2.py`: An application that monitors IAM, EC2, and S3, generates an email, and sends it automatically.
