@@ -56,8 +56,15 @@ def iam_part(username):
         if admin_policy_check['Policy']['AttachmentCount'] >= 1:
             ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nThere is users with Administrator Policy attached.')
         if datetime.now(timezone.utc) >= access_key + relativedelta(months=3):
-            ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nYour IAM Access Key was deleted.')
-            client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
+            print('IAM: Your Access Key is 3 months old, its recommended to deactivate the current key and create a new one.')
+            delete_confirmation = input('Do you want to delete the key? (y/n)')
+            if 'y' or 'yes' in delete_confirmation:
+                print('Your Access Key was deleted.')
+                ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nYour IAM Access Key was deleted.')
+                client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
+            else:
+                print('Your Access Key still online.')
+
     except botocore.exceptions.ClientError as error:
             print(f'Error: {error}')
 
