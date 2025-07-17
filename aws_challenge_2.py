@@ -17,7 +17,7 @@ def s3_part():
         encryption = client.get_bucket_encryption(Bucket=bucket['Name'])
         acl = client.get_bucket_acl(Bucket=bucket['Name'])
         if 'Status' in versioning:
-            ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com',f'Bucket Name: {bucket['Name']}\nVersioning: {versioning['Status']}\nEncryption: {encryption['ServerSideEncryptionConfiguration']['Rules'][0]['BucketKeyEnabled']}')
+            ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com',f'S3\nBucket Name: {bucket['Name']}\nVersioning: {versioning['Status']}\nEncryption: {encryption['ServerSideEncryptionConfiguration']['Rules'][0]['BucketKeyEnabled']}')
         else:
             ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com',f'S3\nBucket Name: {bucket['Name']}\nVersioning: Disabled\nEncryption: {encryption['ServerSideEncryptionConfiguration']['Rules'][0]['BucketKeyEnabled']}')
 
@@ -28,7 +28,7 @@ def ec2_part():
     uptime = (datetime.now(timezone.utc) - date)
 
     if not data['Reservations']:
-        print("This account doesn't have any instances")
+        print("This account doesn't have any instances.")
         return
 
     for reservation in data['Reservations']:
@@ -49,21 +49,27 @@ def ec2_part():
 def iam_part(username):
     client = session.client('iam')
     try:
-        access_key = client.list_access_keys(UserName=username)['AccessKeyMetadata'][0]['CreateDate']
-        access_key_id  = client.list_access_keys(UserName=username)['AccessKeyMetadata'][0]['AccessKeyId']
-        admin_policy_check = client.get_policy(PolicyArn = 'arn:aws:iam::aws:policy/AdministratorAccess')
+        response = client.list_access_keys(UserName=username)
+        metadata = response['AccessKeyMetadata']
+        if metadata:
+            access_key_data = metadata[0]
+            access_key = access_key_data['CreateDate']
+            access_key_id = access_key_data['AccessKeyId']
+            admin_policy_check = client.get_policy(PolicyArn = 'arn:aws:iam::aws:policy/AdministratorAccess')
 
-        if admin_policy_check['Policy']['AttachmentCount'] >= 1:
-            ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nThere is users with Administrator Policy attached.')
-        if datetime.now(timezone.utc) >= access_key + relativedelta(months=3):
-            print('IAM: Your Access Key is 3 months old, its recommended to deactivate the current key and create a new one.')
-            delete_confirmation = input('Do you want to delete the key? (y/n)')
-            if 'y' or 'yes' in delete_confirmation:
-                print('Your Access Key was deleted.')
-                ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nYour IAM Access Key was deleted.')
-                client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
-            else:
-                print('Your Access Key still online.')
+            if admin_policy_check['Policy']['AttachmentCount'] >= 1:
+                ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nThere is users with Administrator Policy attached.')
+            if datetime.now(timezone.utc) >= access_key + relativedelta(months=3):
+                print('IAM: Your Access Key is 3 months old, its recommended to deactivate the current key and create a new one.')
+                delete_confirmation = input('Do you want to delete the key? (y/n)')
+                if delete_confirmation.lower() in ['y', 'yes']:
+                    print('Your Access Key was deleted.')
+                    ses_part('pedrogscarlassara@gmail.com', 'pedrogscarlassara@gmail.com', 'IAM\nYour IAM Access Key was deleted.')
+                    client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
+                else:
+                    print('Your Access Key still online.')
+        else:
+            print("You don't have any Access Key")
 
     except botocore.exceptions.ClientError as error:
             print(f'Error: {error}')
@@ -85,7 +91,7 @@ def ses_part(source, subject, body):
         },
         Message={
             'Subject': {
-                'Data': subject,
+                'Data': 'AWS Monitor Notification',
                 'Charset': 'UTF-8',
             },
             'Body': {
@@ -101,5 +107,3 @@ def ses_part(source, subject, body):
         }
     }
 )
-
-iam_part('scarlassara-laptop')
