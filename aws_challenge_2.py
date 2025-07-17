@@ -99,13 +99,7 @@ def ses_part(source, subject, body):
 
             }
         }
-    },
-    Tags=[
-        {
-            'Name': 'string',
-            'Value': 'string'
-        }
-    ]
+    }
 )
 
 iam_part('scarlassara-laptop')
